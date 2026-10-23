@@ -1,0 +1,10 @@
+{
+  "name": "Neuro-Type: Alat Bantu Komunikasi Pelacak Kepala",
+  "description": "Alat bantu komunikasi (assistive technology) berbasis pelacakan kepala via webcam untuk penyandang disabilitas motorik berat (ALS). Mengetik dan berbicara tanpa tangan.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
