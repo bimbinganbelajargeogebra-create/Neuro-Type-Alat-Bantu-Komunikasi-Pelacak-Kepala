@@ -12,11 +12,12 @@ import {
   Play,
   ArrowLeft,
   MessageSquareQuote,
+  CornerDownLeft,
 } from 'lucide-react';
 import { AppTheme, ButtonSize, KeyboardView, LetterGroup, PhraseItem } from '../types';
 import { DwellButton } from './DwellButton';
 
-// 7 Grup Huruf Sesuai Spesifikasi
+// 7 Grup Huruf Terstruktur
 export const LETTER_GROUPS: Record<string, LetterGroup> = {
   'group-abcd': { id: 'group-abcd', label: 'ABCD', letters: ['A', 'B', 'C', 'D'] },
   'group-efgh': { id: 'group-efgh', label: 'EFGH', letters: ['E', 'F', 'G', 'H'] },
@@ -27,7 +28,7 @@ export const LETTER_GROUPS: Record<string, LetterGroup> = {
   'group-yz': { id: 'group-yz', label: 'YZ', letters: ['Y', 'Z', '.', ',', '?', '!'] },
 };
 
-// 8 Frasa Cepat Sesuai Spesifikasi
+// 8 Frasa Cepat untuk Percakapan Harian
 export const QUICK_PHRASES: PhraseItem[] = [
   { id: 'phrase-1', text: 'Ya', category: 'utama' },
   { id: 'phrase-2', text: 'Tidak', category: 'utama' },
@@ -80,27 +81,27 @@ export const Keyboard: React.FC<KeyboardProps> = ({
   focusedSwitchId,
   hasText,
 }) => {
-  // Jika dalam Mode Jeda, tampilkan SATU tombol besar "LANJUT" di tengah layar
+  // 1. TAMPILAN MODE JEDA (ISTIRAHAT)
   if (isPaused) {
     return (
-      <div className="w-full flex-1 flex flex-col items-center justify-center p-4 sm:p-6 bg-slate-950/90 rounded-2xl sm:rounded-3xl border-2 sm:border-4 border-amber-500/80 shadow-2xl backdrop-blur-md">
-        <div className="text-center mb-4 sm:mb-6 max-w-md">
-          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-amber-500/20 text-amber-400 mb-2 sm:mb-4 border-2 border-amber-500/50">
-            <Pause className="w-7 h-7 sm:w-10 sm:h-10 animate-pulse" />
+      <div className="w-full flex-1 flex flex-col items-center justify-center p-4 sm:p-8 bg-slate-900/90 dark:bg-slate-950/90 rounded-2xl border-2 border-amber-500/60 shadow-xl backdrop-blur-sm">
+        <div className="text-center mb-5 sm:mb-7 max-w-md">
+          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-18 sm:h-18 rounded-2xl bg-amber-500/10 text-amber-400 mb-3 border border-amber-500/40">
+            <Pause className="w-8 h-8 animate-pulse" />
           </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-amber-300 mb-1 sm:mb-2">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-amber-300 mb-2">
             Mode Istirahat Aktif
           </h2>
-          <p className="text-slate-300 text-xs sm:text-base">
+          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
             Semua tombol dinonaktifkan agar Anda dapat mengistirahatkan mata dan kepala
-            tanpa khawatir salah pencet.
+            tanpa khawatir memicu tombol lain.
           </p>
         </div>
 
         <DwellButton
           id="btn-resume-mode"
-          label="LANJUT"
-          subLabel="Tahan untuk mengaktifkan kembali"
+          label="LANJUTKAN"
+          subLabel="Tahan kursor untuk kembali mengetik"
           icon={<Play className="w-6 h-6 sm:w-8 sm:h-8 fill-current" />}
           variant="accent"
           size="large"
@@ -109,27 +110,32 @@ export const Keyboard: React.FC<KeyboardProps> = ({
           currentDwellId={currentDwellId}
           dwellProgress={dwellProgress}
           isSwitchFocused={focusedSwitchId === 'btn-resume-mode'}
-          className="w-full max-w-sm sm:max-w-md !min-h-[100px] sm:!min-h-[130px] text-2xl sm:text-3xl font-black shadow-[0_0_35px_rgba(16,185,129,0.5)] border-2 sm:border-4 border-emerald-400"
-          ariaLabel="Lanjutkan dan aktifkan kembali tombol keyboard"
+          className="w-full max-w-sm sm:max-w-md !min-h-[95px] sm:!min-h-[120px] text-2xl sm:text-3xl font-black border-2 border-white"
+          ariaLabel="Lanjutkan dan aktifkan kembali keyboard"
         />
       </div>
     );
   }
 
-  // Tampilan 2: Menu Frasa Cepat
+  // 2. TAMPILAN MENU FRASA CEPAT
   if (view === 'phrases') {
     return (
       <div className="w-full flex-1 flex flex-col h-full min-h-0 overflow-y-auto">
-        <div className="flex items-center justify-between mb-1.5 sm:mb-3 px-1">
-          <div className="flex items-center gap-1.5">
-            <MessageSquareQuote className="w-5 h-5 text-cyan-400" />
-            <h3 className="text-sm sm:text-lg md:text-xl font-bold uppercase tracking-wide text-white truncate">
-              Pilih Frasa Cepat (Langsung Diucapkan)
-            </h3>
+        {/* Navigasi Breadcrumb & Tombol Kembali Jelas */}
+        <div className="flex items-center justify-between mb-2 px-1 pb-1 border-b border-slate-700/50">
+          <div className="flex items-center gap-2">
+            <span className="text-xs uppercase font-bold text-slate-400">Navigasi:</span>
+            <span className="text-xs text-slate-400">Menu Utama</span>
+            <span className="text-slate-500">/</span>
+            <span className="text-sm font-bold text-sky-400 flex items-center gap-1">
+              <MessageSquareQuote className="w-4 h-4" /> Frasa Cepat
+            </span>
           </div>
+
           <DwellButton
             id="btn-back-from-phrases"
             label="KEMBALI"
+            subLabel="Ke Menu Utama"
             icon={<ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />}
             variant="secondary"
             size="small"
@@ -138,12 +144,13 @@ export const Keyboard: React.FC<KeyboardProps> = ({
             currentDwellId={currentDwellId}
             dwellProgress={dwellProgress}
             isSwitchFocused={focusedSwitchId === 'btn-back-from-phrases'}
-            className="!min-h-[38px] sm:!min-h-[46px] px-3 sm:px-5"
+            className="!min-h-[42px] sm:!min-h-[48px] px-4 font-bold border-2"
             ariaLabel="Kembali ke menu utama"
           />
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5 sm:gap-2.5 flex-1">
+        {/* Grid Frasa Cepat */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-2.5 flex-1">
           {QUICK_PHRASES.map((phrase) => {
             const isEmergency =
               phrase.id === 'phrase-5' || phrase.id === 'phrase-6';
@@ -152,7 +159,7 @@ export const Keyboard: React.FC<KeyboardProps> = ({
                 key={phrase.id}
                 id={phrase.id}
                 label={phrase.text}
-                subLabel="langsung bicara"
+                subLabel="langsung diucapkan"
                 variant={isEmergency ? 'danger' : 'primary'}
                 size={buttonSize}
                 theme={theme}
@@ -160,7 +167,7 @@ export const Keyboard: React.FC<KeyboardProps> = ({
                 currentDwellId={currentDwellId}
                 dwellProgress={dwellProgress}
                 isSwitchFocused={focusedSwitchId === phrase.id}
-                className="!text-xs sm:!text-sm md:!text-lg font-bold p-2 text-center"
+                className="!text-xs sm:!text-sm md:!text-base font-bold p-2.5 text-center leading-snug"
                 ariaLabel={`Ucapkan frasa ${phrase.text}`}
               />
             );
@@ -170,20 +177,25 @@ export const Keyboard: React.FC<KeyboardProps> = ({
     );
   }
 
-  // Tampilan 3: Menu Grup Huruf (Setelah memilih grup ABCD, dsb.)
+  // 3. TAMPILAN MENU GRUP HURUF (Setelah Memilih ABCD, dsb.)
   if (view === 'group' && activeGroup) {
     return (
       <div className="w-full flex-1 flex flex-col h-full min-h-0 overflow-y-auto">
-        <div className="flex items-center justify-between mb-1.5 sm:mb-2 px-1">
-          <div className="flex items-center gap-1.5">
-            <span className="text-[10px] sm:text-xs uppercase font-bold text-slate-400">Grup:</span>
-            <span className="text-lg sm:text-2xl font-black text-cyan-400">
+        {/* Navigasi Breadcrumb & Tombol Kembali */}
+        <div className="flex items-center justify-between mb-2 px-1 pb-1 border-b border-slate-700/50">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <span className="text-xs uppercase font-bold text-slate-400">Pilih Huruf:</span>
+            <span className="text-xs text-slate-400">Grup</span>
+            <span className="text-slate-500">/</span>
+            <span className="text-lg font-black text-sky-400">
               {activeGroup.label}
             </span>
           </div>
+
           <DwellButton
             id="btn-back-from-group"
             label="KEMBALI"
+            subLabel="Ke Menu Utama"
             icon={<ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />}
             variant="secondary"
             size="small"
@@ -192,14 +204,14 @@ export const Keyboard: React.FC<KeyboardProps> = ({
             currentDwellId={currentDwellId}
             dwellProgress={dwellProgress}
             isSwitchFocused={focusedSwitchId === 'btn-back-from-group'}
-            className="!min-h-[38px] sm:!min-h-[46px] px-3 sm:px-5"
+            className="!min-h-[42px] sm:!min-h-[48px] px-4 font-bold border-2"
             ariaLabel="Kembali ke menu utama"
           />
         </div>
 
-        {/* Grid tombol huruf di dalam grup */}
+        {/* Grid Huruf Tunggal dengan Tombol Spasi dan Hapus di Dalam Subgrup */}
         <div
-          className={`grid gap-1.5 sm:gap-2.5 flex-1 ${
+          className={`grid gap-2 sm:gap-2.5 flex-1 ${
             activeGroup.letters.length > 4
               ? 'grid-cols-3 sm:grid-cols-4 md:grid-cols-4'
               : 'grid-cols-2 sm:grid-cols-4 md:grid-cols-4'
@@ -212,6 +224,7 @@ export const Keyboard: React.FC<KeyboardProps> = ({
                 key={charId}
                 id={charId}
                 label={char}
+                subLabel="pilih huruf"
                 variant="primary"
                 size={buttonSize}
                 theme={theme}
@@ -219,17 +232,17 @@ export const Keyboard: React.FC<KeyboardProps> = ({
                 currentDwellId={currentDwellId}
                 dwellProgress={dwellProgress}
                 isSwitchFocused={focusedSwitchId === charId}
-                className="!text-2xl sm:!text-4xl md:!text-5xl font-black"
+                className="!text-3xl sm:!text-5xl md:!text-6xl font-black"
                 ariaLabel={`Pilih huruf ${char}`}
               />
             );
           })}
 
-          {/* Opsi tombol SPASI di subgrup */}
+          {/* Akses SPASI di dalam subgrup */}
           <DwellButton
             id="btn-subgroup-space"
             label="SPASI"
-            icon={<Space className="w-5 h-5" />}
+            icon={<Space className="w-5 h-5 sm:w-6 sm:h-6" />}
             variant="secondary"
             size={buttonSize}
             theme={theme}
@@ -240,11 +253,11 @@ export const Keyboard: React.FC<KeyboardProps> = ({
             ariaLabel="Tambahkan spasi"
           />
 
-          {/* Opsi tombol HAPUS di subgrup */}
+          {/* Akses HAPUS di dalam subgrup */}
           <DwellButton
             id="btn-subgroup-delete"
             label="HAPUS"
-            icon={<Delete className="w-5 h-5" />}
+            icon={<Delete className="w-5 h-5 sm:w-6 sm:h-6" />}
             variant="danger"
             size={buttonSize}
             theme={theme}
@@ -259,10 +272,10 @@ export const Keyboard: React.FC<KeyboardProps> = ({
     );
   }
 
-  // Tampilan 1: MENU UTAMA
-  // Responsif: 3 kolom di layar HP portrait (3x4), 4 kolom di landscape tablet/laptop/desktop (4x3)
+  // 4. TAMPILAN MENU UTAMA (12 Tombol Besar Berkontras Tinggi & Proporsional)
+  // Responsif: 3x4 di HP Portrait, 4x3 di Landscape Tablet / Laptop / PC
   return (
-    <div className="w-full flex-1 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 gap-1.5 sm:gap-2 md:gap-3 flex-1 h-full min-h-0">
+    <div className="w-full flex-1 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 gap-2 sm:gap-2.5 md:gap-3 flex-1 h-full min-h-0">
       {/* 1. ABCD */}
       <DwellButton
         id="btn-group-abcd"
@@ -358,7 +371,7 @@ export const Keyboard: React.FC<KeyboardProps> = ({
       <DwellButton
         id="btn-main-space"
         label="SPASI"
-        subLabel="Spasi kata"
+        subLabel="Jarak kata"
         icon={<Space className="w-5 h-5 sm:w-6 sm:h-6" />}
         variant="secondary"
         size={buttonSize}
@@ -389,7 +402,7 @@ export const Keyboard: React.FC<KeyboardProps> = ({
         id="btn-main-phrases"
         label="FRASA"
         subLabel="Kalimat siap pakai"
-        icon={<MessageSquareQuote className="w-5 h-5 sm:w-6 sm:h-6 text-amber-300" />}
+        icon={<MessageSquareQuote className="w-5 h-5 sm:w-6 sm:h-6" />}
         variant="warning"
         size={buttonSize}
         theme={theme}
@@ -404,7 +417,7 @@ export const Keyboard: React.FC<KeyboardProps> = ({
         id="btn-main-speak"
         label="BICARA"
         subLabel={hasText ? 'Baca seluruh teks' : 'Ketik teks dulu'}
-        icon={<Volume2 className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-300" />}
+        icon={<Volume2 className="w-5 h-5 sm:w-6 sm:h-6" />}
         variant="accent"
         size={buttonSize}
         theme={theme}
@@ -420,7 +433,7 @@ export const Keyboard: React.FC<KeyboardProps> = ({
         id="btn-main-pause"
         label="JEDA"
         subLabel="Mode istirahat"
-        icon={<Pause className="w-5 h-5 sm:w-6 sm:h-6 text-amber-300" />}
+        icon={<Pause className="w-5 h-5 sm:w-6 sm:h-6" />}
         variant="warning"
         size={buttonSize}
         theme={theme}

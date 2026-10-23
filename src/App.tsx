@@ -469,13 +469,14 @@ export default function App() {
         )}
 
       {/* Baris Atas: Header & Aksi Cepat (Dwellable) */}
-      <header className="w-full flex items-center justify-between gap-3 mb-2 px-1">
-        <div className="flex items-center gap-2">
-          <span className="font-black text-xl sm:text-2xl tracking-tight text-cyan-400">
+      <header className="w-full flex items-center justify-between gap-3 mb-1.5 px-1">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <span className="font-black text-xl sm:text-2xl tracking-tight text-sky-400">
             Neuro-Type
           </span>
-          {/* Badge Mode Aktif */}
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+          <span className="text-slate-600 hidden sm:inline" aria-hidden="true">·</span>
+          {/* Mode Aktif Bersih Tanpa Candy Pill */}
+          <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-slate-300">
             {settings.controlMode === 'head_tracker' ? (
               <>
                 <Video className="w-3.5 h-3.5 text-emerald-400" />
@@ -483,7 +484,7 @@ export default function App() {
               </>
             ) : settings.controlMode === 'mouse_simulator' ? (
               <>
-                <MousePointer className="w-3.5 h-3.5 text-cyan-400" />
+                <MousePointer className="w-3.5 h-3.5 text-sky-400" />
                 <span>Simulasi Mouse Dwell</span>
               </>
             ) : (
@@ -495,7 +496,7 @@ export default function App() {
           </span>
         </div>
 
-        {/* Tombol Aksi Pengaturan & Kalibrasi (Bisa di-dwell oleh kepala!) */}
+        {/* Tombol Aksi Pengaturan & Kalibrasi (Bisa di-dwell oleh kepala) */}
         <div className="flex items-center gap-2">
           {/* Tombol Kalibrasi Ulang (Khusus mode pelacak kepala) */}
           {settings.controlMode === 'head_tracker' && (
@@ -504,10 +505,10 @@ export default function App() {
               data-dwell-id="btn-top-recalibrate"
               onClick={() => setIsCalibrating(true)}
               aria-label="Buka Kalibrasi Ulang Gerakan Kepala"
-              className={`relative px-3 py-2 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition-all ${
+              className={`relative px-3 py-1.5 sm:py-2 rounded-xl border-2 text-xs font-bold flex items-center gap-1.5 transition-all ${
                 currentDwellId === 'btn-top-recalibrate'
-                  ? 'bg-cyan-600 text-white border-white scale-105'
-                  : 'bg-slate-900/90 text-cyan-300 border-slate-700 hover:bg-slate-800'
+                  ? 'bg-sky-600 text-white border-white scale-105'
+                  : 'bg-slate-900 text-slate-200 border-slate-700 hover:border-slate-500 hover:bg-slate-800'
               }`}
             >
               {currentDwellId === 'btn-top-recalibrate' && dwellProgress > 0 && (
@@ -516,8 +517,8 @@ export default function App() {
                   style={{ width: `${dwellProgress * 100}%` }}
                 />
               )}
-              <Target className="w-4 h-4" />
-              <span className="hidden md:inline">Kalibrasi Ulang</span>
+              <Target className="w-4 h-4 text-sky-400" />
+              <span className="hidden md:inline">Kalibrasi</span>
             </button>
           )}
 
@@ -527,10 +528,10 @@ export default function App() {
             data-dwell-id="btn-top-settings"
             onClick={() => setIsSettingsOpen(true)}
             aria-label="Buka Menu Pengaturan"
-            className={`relative px-3.5 py-2 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition-all ${
+            className={`relative px-3 py-1.5 sm:py-2 rounded-xl border-2 text-xs font-bold flex items-center gap-1.5 transition-all ${
               currentDwellId === 'btn-top-settings'
-                ? 'bg-cyan-600 text-white border-white scale-105'
-                : 'bg-slate-900/90 text-slate-200 border-slate-700 hover:bg-slate-800'
+                ? 'bg-sky-600 text-white border-white scale-105'
+                : 'bg-slate-900 text-slate-200 border-slate-700 hover:border-slate-500 hover:bg-slate-800'
             }`}
           >
             {currentDwellId === 'btn-top-settings' && dwellProgress > 0 && (
@@ -539,7 +540,7 @@ export default function App() {
                 style={{ width: `${dwellProgress * 100}%` }}
               />
             )}
-            <SettingsIcon className="w-4 h-4 text-cyan-400" />
+            <SettingsIcon className="w-4 h-4 text-slate-400" />
             <span className="hidden md:inline">Pengaturan</span>
           </button>
         </div>
@@ -559,11 +560,14 @@ export default function App() {
         />
       </section>
 
-      {/* Baris Saran Kata / Prediksi (3 Tombol Dwellable) */}
+      {/* Baris Saran Kata / Prediksi & Tombol BICARA Cepat di Bagian Atas */}
       <section className="w-full">
         <WordSuggestions
           suggestions={suggestions}
           onSelectSuggestion={handleSelectSuggestion}
+          onSpeak={() => handleSpeak()}
+          isSpeaking={isSpeaking}
+          hasText={text.trim().length > 0}
           theme={settings.theme}
           buttonSize={settings.buttonSize}
           currentDwellId={currentDwellId}

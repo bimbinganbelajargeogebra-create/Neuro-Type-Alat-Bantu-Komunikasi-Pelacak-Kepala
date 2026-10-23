@@ -43,88 +43,90 @@ export const DwellButton: React.FC<DwellButtonProps> = ({
   const [justActivated, setJustActivated] = useState(false);
   const prevProgressRef = useRef(dwellProgress);
 
-  // Efek animasi saat dwell selesai
+  // Animasi tactile sederhana saat aktivasi selesai
   useEffect(() => {
     if (prevProgressRef.current < 0.95 && dwellProgress >= 1.0 && currentDwellId === id) {
       setJustActivated(true);
-      const timer = setTimeout(() => setJustActivated(false), 300);
+      const timer = setTimeout(() => setJustActivated(false), 200);
       return () => clearTimeout(timer);
     }
     prevProgressRef.current = dwellProgress;
   }, [dwellProgress, currentDwellId, id]);
 
-  // Gaya berdasarkan varian dan tema
+  // Gaya varian dengan kontras tinggi (WCAG AA/AAA) dan estetika minimalis
   const getVariantStyles = () => {
     if (disabled) {
-      return 'opacity-40 cursor-not-allowed bg-slate-800 text-slate-500 border-slate-700';
+      return 'opacity-35 cursor-not-allowed bg-slate-800 text-slate-500 border-slate-700/60';
     }
 
+    // 1. TEMA HIGH-CONTRAST (WCAG AAA - Hitam & Kuning Kontras Maksimal)
     if (theme === 'high-contrast') {
       if (isSwitchFocused || isBeingDwelled) {
-        return 'bg-yellow-400 text-black border-2 sm:border-4 border-white font-black shadow-[0_0_15px_#facc15]';
+        return 'bg-yellow-400 text-black border-3 border-white font-black shadow-[0_0_0_2px_#000] scale-[1.01]';
       }
-      return 'bg-black text-yellow-300 border-2 sm:border-4 border-yellow-400 font-extrabold hover:bg-yellow-950/40';
+      return 'bg-black text-yellow-300 border-3 border-yellow-400 font-black hover:bg-yellow-950/40';
     }
 
+    // 2. TEMA LIGHT (Minimalis & Bersih - Latar Putih/Abu Lembut, Teks Pekat)
     if (theme === 'light') {
       switch (variant) {
-        case 'accent':
+        case 'accent': // BICARA
           return isBeingDwelled || isSwitchFocused
-            ? 'bg-emerald-600 text-white border-2 border-emerald-400 shadow-lg scale-[1.02]'
-            : 'bg-emerald-100 text-emerald-950 border-2 border-emerald-400/80 hover:bg-emerald-200';
-        case 'danger':
+            ? 'bg-emerald-600 text-white border-2 border-emerald-700 shadow-md scale-[1.01]'
+            : 'bg-emerald-50 text-emerald-950 border-2 border-emerald-500/70 hover:bg-emerald-100 hover:border-emerald-600';
+        case 'danger': // HAPUS
           return isBeingDwelled || isSwitchFocused
-            ? 'bg-rose-600 text-white border-2 border-rose-400 shadow-lg scale-[1.02]'
-            : 'bg-rose-100 text-rose-950 border-2 border-rose-400/80 hover:bg-rose-200';
-        case 'warning':
+            ? 'bg-rose-600 text-white border-2 border-rose-700 shadow-md scale-[1.01]'
+            : 'bg-rose-50 text-rose-950 border-2 border-rose-500/70 hover:bg-rose-100 hover:border-rose-600';
+        case 'warning': // JEDA / FRASA
           return isBeingDwelled || isSwitchFocused
-            ? 'bg-amber-600 text-white border-2 border-amber-400 shadow-lg scale-[1.02]'
-            : 'bg-amber-100 text-amber-950 border-2 border-amber-400/80 hover:bg-amber-200';
-        case 'secondary':
+            ? 'bg-amber-600 text-white border-2 border-amber-700 shadow-md scale-[1.01]'
+            : 'bg-amber-50 text-amber-950 border-2 border-amber-500/70 hover:bg-amber-100 hover:border-amber-600';
+        case 'secondary': // SPASI / KEMBALI
           return isBeingDwelled || isSwitchFocused
-            ? 'bg-slate-300 text-slate-950 border-2 border-slate-500 shadow-lg scale-[1.02]'
-            : 'bg-slate-200 text-slate-900 border-2 border-slate-400 hover:bg-slate-300';
-        default:
+            ? 'bg-slate-800 text-white border-2 border-slate-900 shadow-md scale-[1.01]'
+            : 'bg-slate-100 text-slate-900 border-2 border-slate-300 hover:bg-slate-200 hover:border-slate-400';
+        default: // Tombol Huruf Utama
           return isBeingDwelled || isSwitchFocused
-            ? 'bg-sky-600 text-white border-2 border-sky-400 shadow-lg scale-[1.02]'
-            : 'bg-white text-slate-900 border-2 border-slate-300 hover:bg-sky-50 shadow-sm';
+            ? 'bg-sky-600 text-white border-2 border-sky-700 shadow-md scale-[1.01]'
+            : 'bg-white text-slate-950 border-2 border-slate-300 hover:bg-slate-50 hover:border-slate-400 shadow-sm';
       }
     }
 
-    // Default Dark Theme
+    // 3. TEMA DARK (Minimalis Modern - Latar Gelap Tenang, Kontras Tajam)
     switch (variant) {
-      case 'accent': // e.g. BICARA / SUARA
+      case 'accent': // BICARA
         return isBeingDwelled || isSwitchFocused
-          ? 'bg-emerald-600 text-white border-2 border-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.5)] scale-[1.02]'
-          : 'bg-emerald-950/70 text-emerald-100 border-2 border-emerald-500/60 hover:border-emerald-400 hover:bg-emerald-900/80';
-      case 'danger': // e.g. HAPUS
+          ? 'bg-emerald-500 text-slate-950 border-2 border-white shadow-lg scale-[1.01]'
+          : 'bg-emerald-950/50 text-emerald-100 border-2 border-emerald-500/60 hover:border-emerald-400 hover:bg-emerald-900/60';
+      case 'danger': // HAPUS
         return isBeingDwelled || isSwitchFocused
-          ? 'bg-rose-600 text-white border-2 border-rose-300 shadow-[0_0_20px_rgba(244,63,94,0.5)] scale-[1.02]'
-          : 'bg-rose-950/60 text-rose-100 border-2 border-rose-600/60 hover:border-rose-400 hover:bg-rose-900/80';
-      case 'warning': // e.g. JEDA
+          ? 'bg-rose-500 text-white border-2 border-white shadow-lg scale-[1.01]'
+          : 'bg-rose-950/50 text-rose-100 border-2 border-rose-500/60 hover:border-rose-400 hover:bg-rose-900/60';
+      case 'warning': // JEDA / FRASA
         return isBeingDwelled || isSwitchFocused
-          ? 'bg-amber-600 text-white border-2 border-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.5)] scale-[1.02]'
-          : 'bg-amber-950/60 text-amber-100 border-2 border-amber-500/60 hover:border-amber-400 hover:bg-amber-900/80';
-      case 'secondary': // e.g. SPASI / KEMBALI
+          ? 'bg-amber-500 text-slate-950 border-2 border-white shadow-lg scale-[1.01]'
+          : 'bg-amber-950/50 text-amber-100 border-2 border-amber-500/60 hover:border-amber-400 hover:bg-amber-900/60';
+      case 'secondary': // SPASI / KEMBALI
         return isBeingDwelled || isSwitchFocused
-          ? 'bg-slate-700 text-white border-2 border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)] scale-[1.02]'
-          : 'bg-slate-800/80 text-slate-200 border-2 border-slate-700 hover:border-slate-500 hover:bg-slate-800';
+          ? 'bg-cyan-500 text-slate-950 border-2 border-white shadow-lg scale-[1.01]'
+          : 'bg-slate-800/90 text-slate-100 border-2 border-slate-600/80 hover:border-slate-400 hover:bg-slate-800';
       default: // Tombol Huruf Utama
         return isBeingDwelled || isSwitchFocused
-          ? 'bg-cyan-600 text-white border-2 border-cyan-300 shadow-[0_0_22px_rgba(6,182,212,0.6)] scale-[1.02]'
-          : 'bg-slate-900/90 text-cyan-50 border-2 border-slate-700/90 hover:border-cyan-500/80 hover:bg-slate-800/90';
+          ? 'bg-sky-500 text-slate-950 border-2 border-white shadow-lg scale-[1.01]'
+          : 'bg-slate-900/90 text-slate-50 border-2 border-slate-700/80 hover:border-sky-400 hover:bg-slate-850';
     }
   };
 
-  // Dimensi ukuran tombol yang responsif dari HP hingga monitor PC 4K
+  // Ukuran tombol yang proporsional & nyaman untuk pengguna disabilitas motorik
   const getSizeStyles = () => {
     switch (size) {
       case 'small':
-        return 'h-full min-h-[46px] sm:min-h-[58px] md:min-h-[72px] text-sm sm:text-base md:text-lg p-1.5 sm:p-2';
+        return 'h-full min-h-[48px] sm:min-h-[60px] md:min-h-[72px] text-sm sm:text-base md:text-lg p-1.5 sm:p-2';
       case 'medium':
-        return 'h-full min-h-[54px] sm:min-h-[72px] md:min-h-[90px] text-base sm:text-lg md:text-xl p-2 sm:p-2.5';
-      default: // large
-        return 'h-full min-h-[60px] sm:min-h-[82px] md:min-h-[100px] lg:min-h-[115px] text-lg sm:text-xl md:text-2xl lg:text-3xl p-2 sm:p-3 md:p-4';
+        return 'h-full min-h-[58px] sm:min-h-[76px] md:min-h-[92px] text-base sm:text-lg md:text-xl p-2 sm:p-2.5';
+      default: // large (standar ergonomis)
+        return 'h-full min-h-[66px] sm:min-h-[86px] md:min-h-[104px] lg:min-h-[118px] text-xl sm:text-2xl md:text-3xl lg:text-4xl p-2 sm:p-3 md:p-4';
     }
   };
 
@@ -136,20 +138,20 @@ export const DwellButton: React.FC<DwellButtonProps> = ({
       onClick={() => {
         if (!disabled) {
           setJustActivated(true);
-          setTimeout(() => setJustActivated(false), 250);
+          setTimeout(() => setJustActivated(false), 200);
           onClick();
         }
       }}
       aria-label={ariaLabel || label}
       aria-pressed={isBeingDwelled}
-      className={`relative select-none rounded-xl sm:rounded-2xl flex flex-col items-center justify-center font-bold tracking-wide transition-all duration-150 outline-none focus-visible:ring-4 focus-visible:ring-cyan-400 overflow-hidden ${getSizeStyles()} ${getVariantStyles()} ${
-        justActivated ? 'scale-95 ring-4 ring-white' : ''
+      className={`relative select-none rounded-xl sm:rounded-2xl flex flex-col items-center justify-center font-bold tracking-tight transition-all duration-150 outline-none focus-visible:ring-4 focus-visible:ring-sky-400 overflow-hidden ${getSizeStyles()} ${getVariantStyles()} ${
+        justActivated ? 'scale-[0.97] ring-4 ring-white' : ''
       } ${className}`}
     >
-      {/* Background Fill Progress Bar (mengisi dari bawah ke atas saat ditahan) */}
+      {/* Pengisian Bar Progres Dwell Bersih dari Bawah */}
       {isBeingDwelled && !disabled && (
         <div
-          className="absolute inset-x-0 bottom-0 pointer-events-none transition-all duration-75 ease-linear opacity-30"
+          className="absolute inset-x-0 bottom-0 pointer-events-none transition-all duration-75 ease-linear opacity-25"
           style={{
             height: `${dwellProgress * 100}%`,
             backgroundColor:
@@ -158,32 +160,36 @@ export const DwellButton: React.FC<DwellButtonProps> = ({
                 : variant === 'accent'
                 ? '#10b981'
                 : variant === 'danger'
-                ? '#ef4444'
-                : '#06b6d4',
+                ? '#f43f5e'
+                : variant === 'warning'
+                ? '#f59e0b'
+                : '#0284c7',
           }}
           aria-hidden="true"
         />
       )}
 
-      {/* Cincin Progres Dwell SVG di Pojok Kanan Atas */}
+      {/* Cincin Progres Dwell SVG di Pojok Kanan Atas dengan Kontras Ganda */}
       {isBeingDwelled && !disabled && (
         <div className="absolute top-1.5 right-1.5 sm:top-2.5 sm:right-2.5 pointer-events-none" aria-hidden="true">
           <svg className="w-4 h-4 sm:w-6 sm:h-6 transform -rotate-90">
+            {/* Latar Belakang Cincin */}
             <circle
               cx="12"
               cy="12"
               r="9"
-              fill="rgba(0,0,0,0.4)"
-              stroke="rgba(255,255,255,0.3)"
+              fill="rgba(0,0,0,0.5)"
+              stroke="rgba(255,255,255,0.4)"
               strokeWidth="2.5"
             />
+            {/* Busur Progres Mengisi */}
             <circle
               cx="12"
               cy="12"
               r="9"
               fill="none"
               stroke={theme === 'high-contrast' ? '#facc15' : '#38bdf8'}
-              strokeWidth="3"
+              strokeWidth="3.5"
               strokeDasharray={2 * Math.PI * 9}
               strokeDashoffset={2 * Math.PI * 9 * (1 - dwellProgress)}
               strokeLinecap="round"
@@ -195,17 +201,21 @@ export const DwellButton: React.FC<DwellButtonProps> = ({
       {/* Konten Tombol */}
       <div className="relative z-10 flex flex-col items-center justify-center gap-0.5 sm:gap-1 text-center w-full px-1">
         {icon && (
-          <div className="text-base sm:text-xl md:text-2xl mb-0.5 shrink-0 flex items-center justify-center">
+          <div className="text-lg sm:text-2xl md:text-3xl shrink-0 flex items-center justify-center mb-0.5">
             {icon}
           </div>
         )}
-        <span className="font-extrabold tracking-wider leading-none drop-shadow-sm truncate w-full">
+        <span className="font-extrabold tracking-normal leading-none truncate w-full">
           {label}
         </span>
         {subLabel && (
           <span
-            className={`hidden xs:inline-block sm:inline-block text-[9px] sm:text-xs md:text-sm font-semibold tracking-normal opacity-80 truncate max-w-full ${
-              theme === 'high-contrast' ? 'text-yellow-200' : 'text-slate-300'
+            className={`hidden xs:inline-block sm:inline-block text-[10px] sm:text-xs md:text-sm font-medium tracking-normal truncate max-w-full ${
+              theme === 'high-contrast'
+                ? 'text-yellow-200'
+                : theme === 'light'
+                ? 'text-slate-600'
+                : 'text-slate-300'
             }`}
           >
             {subLabel}
@@ -213,11 +223,11 @@ export const DwellButton: React.FC<DwellButtonProps> = ({
         )}
       </div>
 
-      {/* Indikator Fokus Scanning */}
+      {/* Indikator Fokus Switch Scanning */}
       {isSwitchFocused && (
         <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 sm:h-4 sm:w-4">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-full w-full bg-cyan-500"></span>
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-full w-full bg-sky-500 ring-2 ring-white"></span>
         </span>
       )}
     </button>
